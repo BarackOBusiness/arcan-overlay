@@ -10,7 +10,7 @@ LICENSE="BSD-3-Clause GPL-2.0-or-later"
 
 if [[ ${PV} == 9999 ]]; then
 	inherit git-r3
-	EGIT_REPO_URI="https://codeberg.org/letoram/${PN}.git"
+	EGIT_REPO_URI="https://github.com/letoram/${PN}.git"
 else
 	SRC_URI="https://github.com/letoram/${PN}/archive/refs/tags/${PV}.tar.gz"
 	KEYWORDS="~amd64"
@@ -18,22 +18,13 @@ fi
 
 SLOT="0"
 
-VIDEO_PLATFORMS="+dri gles sdl"
-IUSE="${VIDEO_PLATFORMS}
-	+audio camera +decode +encode nested wayland docs
-"
-# at least one video platform must be selected, egl-dri and egl-gles are mutually exclusive
-# egl-gles and sdl are also mutually exclusive whereas egl-dri supports hybrid-sdl
-REQUIRED_USE="
-	|| ( dri gles sdl )
-	gles? ( !dri !sdl )
-	camera? ( decode )
-"
+# Pick a better name for the hybrid-sdl support flag than nested
+IUSE="wayland +nested -ffmpeg"
 
 # More to figure out likely
-# RDEPEND="
-# 	nested? ( media-libs/libsdl2 )
-# "
+RDEPEND="
+	nested? ( media-libs/libsdl2 )
+"
 DEPEND="${RDEPEND}
 	dev-lang/luajit
 	x11-libs/libdrm
@@ -42,12 +33,12 @@ DEPEND="${RDEPEND}
 	media-libs/harfbuzz
 	media-libs/openal
 	wayland? ( dev-libs/wayland )
+	ffmpeg? ( <media-libs/ffmpeg-8 )
 "
 BDEPEND="dev-build/cmake"
 
-# For LWA we're going to need to conditionally add a download for openal
-# and unpack it into external during this phase
 src_prepare() {
+	# ???????? What the FUCK
 	cd "${S}/src"
 	cmake_src_prepare
 }
@@ -55,9 +46,11 @@ src_prepare() {
 src_configure() {
 	local mycmakeargs=(
 		-DDISTR_TAG='Gentoo Linux'
-		-DCMAKE_BUILD_TYPE=Release
-		-DAUDIO_PLATFORM=$(usex audio "openal" "stub")
-		-DENABLE_LWA=$(usex nested ON OFF)
+		-DBUILD_PRESET="everything"
+		-DVIDEO_PLATFORM=egl-dri
+		-DHYBRID_SDL=$(use nested && echo ON || echo OFF)
+		-DDISABLE_WAYLAND=$(use wayland && echo OFF || echo ON)
+		-DDISABLE_FSRV_ENCODE=$(use ffmpeg && echo OFF || echo ON)
 	)
 	cmake_src_configure
 }
