@@ -1,2 +1,0 @@
-# Will fail to build currently, ebuild is being rewritten
-=arcan-base/arcan-9999
