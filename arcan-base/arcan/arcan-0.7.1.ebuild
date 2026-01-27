@@ -9,10 +9,9 @@ HOMEPAGE="https://arcan-fe.com/"
 LICENSE="BSD-3-Clause GPL-2.0-or-later"
 
 if [[ ${PV} == 9999 ]]; then
-	inherit git-r3
-	EGIT_REPO_URI="https://codeberg.org/letoram/${PN}.git"
+	SRC_URI="https://chiselapp.com/user/letoram/repository/${PN}/tarball/master/${PN}.tar.gz"
 else
-	SRC_URI="https://github.com/letoram/${PN}/archive/refs/tags/${PV}.tar.gz"
+	SRC_URI="https://codeberg.org/letoram/${PN}/archive/${PV}.tar.gz"
 	KEYWORDS="~amd64"
 fi
 
