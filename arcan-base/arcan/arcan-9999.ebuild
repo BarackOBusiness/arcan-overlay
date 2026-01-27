@@ -25,7 +25,7 @@ SLOT="0"
 
 VIDEO_PLATFORMS="+dri gles +sdl"
 IUSE="${VIDEO_PLATFORMS}
-	+audio camera +decode +encode nested wayland docs debug
+	+audio camera +decode +encode +nested wayland docs debug
 "
 # at least one video platform must be selected, egl-dri and egl-gles are mutually exclusive
 # egl-gles and sdl are also mutually exclusive whereas egl-dri supports hybrid-sdl
