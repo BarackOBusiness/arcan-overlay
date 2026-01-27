@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 32b991c..5c65421 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.21)
+ project(QtArcanIntegrationPlugin VERSION 0.1)
+ 
+ set(TARGET_QT_VERSION "6" CACHE STRING "The major version of Qt to build against")
+-set(QT_PLUGIN_PREFIX "lib/qt/plugins/platforms" CACHE STRING "The install path for Qt plugins")
++set(QT_PLUGIN_PREFIX "lib64/qt${TARGET_QT_VERSION}/plugins/platforms" CACHE STRING "The install path for Qt plugins")
+ option(SHMIF_FONTS "Enable experimental support for using shmif fonts")
+ 
+ set(CMAKE_CXX_STANDARD 20)
