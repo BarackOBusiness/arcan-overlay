@@ -8,13 +8,18 @@ DESCRIPTION="A powerful and versatile multimedia development framework"
 HOMEPAGE="https://arcan-fe.com/"
 LICENSE="BSD-3-Clause GPL-2.0-or-later"
 
+S="${WORKDIR}/${PN}"
 if [[ ${PV} == 9999 ]]; then
 	SRC_URI="https://arcan.tase.lv/tarball/master/${PN}.tar.gz"
-	S="${WORKDIR}/${PN}"
 else
 	SRC_URI="https://github.com/letoram/${PN}/archive/refs/tags/${PV}.tar.gz"
 	KEYWORDS="~amd64"
 fi
+
+# Handle LWA openal acquisition
+SRC_URI+="
+	nested? ( https://github.com/letoram/openal/archive/refs/heads/master.tar.gz )
+"
 
 SLOT="0"
 
@@ -65,6 +70,11 @@ src_prepare() {
 	if ( use docs ); then
 		cd "doc" && ruby docgen.rb mangen && cd ..
 	fi
+	use nested && {
+		cd "external/git"
+		mv "${WORKDIR}/openal-master" "openal"
+		cd "../.."
+	}
 	cd "src"
 	cmake_src_prepare
 }
