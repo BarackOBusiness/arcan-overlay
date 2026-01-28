@@ -1,0 +1,27 @@
+diff --git a/dix/meson.build b/dix/meson.build
+index c0e6f2b98..d3d7d26ad 100644
+--- a/dix/meson.build
++++ b/dix/meson.build
+@@ -59,8 +59,3 @@ libxserver_main = static_library('libxserver_main',
+     include_directories: inc,
+     dependencies: common_dep,
+ )
+-
+-install_data(
+-    'protocol.txt',
+-    install_dir: serverconfigdir,
+-)
+diff --git a/man/meson.build b/man/meson.build
+index eca10561b..e08f26e06 100644
+--- a/man/meson.build
++++ b/man/meson.build
+@@ -29,9 +29,3 @@ manpage_config.set('modulepath', module_dir)
+ manpage_config.set('suid_wrapper_dir', join_paths(get_option('prefix'), 'libexec'))
+ # \: allows nroff to insert a line break at that position
+ manpage_config.set('default_font_path', default_font_path.replace(',', ',\\:'))
+-
+-install_man(configure_file(
+-    input: 'Xserver.man',
+-    output: 'Xserver.1',
+-    configuration: manpage_config,
+-))
