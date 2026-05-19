@@ -8,13 +8,13 @@ DESCRIPTION="A powerful and versatile multimedia development framework"
 HOMEPAGE="https://arcan-fe.com/"
 LICENSE="BSD-3-Clause GPL-2.0-or-later"
 
-S="${WORKDIR}/${PN}"
 if [[ ${PV} == 9999 ]]; then
 	SRC_URI="https://arcan.tase.lv/tarball/master/${PN}.tar.gz"
 else
 	SRC_URI="https://github.com/letoram/${PN}/archive/refs/tags/${PV}.tar.gz"
 	KEYWORDS="~amd64"
 fi
+S="${WORKDIR}/${PN}"
 
 # Handle LWA openal acquisition
 SRC_URI+="
@@ -47,7 +47,7 @@ DEPEND="
 	audio? ( media-libs/openal )
 	camera? ( media-libs/libuvc )
 	decode? (
-		media-video/vlc
+		<media-video/vlc-4.0
 		app-accessibility/espeak-ng
 		app-text/mupdf
 	)
@@ -68,14 +68,13 @@ BDEPEND="
 src_prepare() {
 	cd "${S}"
 	if ( use docs ); then
-		cd "doc" && ruby docgen.rb mangen && cd ..
+		cd "doc" && ruby docgen.rb mangen
+		cd "${S}"
 	fi
 	use nested && {
-		cd "external/git"
-		mv "${WORKDIR}/openal-master" "openal"
-		cd "../.."
+		mv "${WORKDIR}/openal-master" "external/git/openal"
 	}
-	cd "src"
+	cd "${S}/src"
 	cmake_src_prepare
 }
 

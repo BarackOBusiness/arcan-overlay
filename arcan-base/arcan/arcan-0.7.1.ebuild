@@ -47,7 +47,7 @@ DEPEND="
 	audio? ( media-libs/openal )
 	camera? ( media-libs/libuvc )
 	decode? (
-		media-video/vlc
+		<media-video/vlc-4.0
 		app-accessibility/espeak-ng
 		app-text/mupdf
 	)
@@ -68,14 +68,13 @@ BDEPEND="
 src_prepare() {
 	cd "${S}"
 	if ( use docs ); then
-		cd "doc" && ruby docgen.rb mangen && cd ..
+		cd "doc" && ruby docgen.rb mangen
+		cd "${S}"
 	fi
 	use nested && {
-		cd "external/git"
-		mv "${WORKDIR}/openal-master" "openal"
-		cd "../.."
+		mv "${WORKDIR}/openal-master" "external/git/openal"
 	}
-	cd "src"
+	cd "${S}/src"
 	cmake_src_prepare
 }
 
