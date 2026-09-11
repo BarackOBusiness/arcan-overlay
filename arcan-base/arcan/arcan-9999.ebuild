@@ -9,12 +9,11 @@ HOMEPAGE="https://arcan-fe.com/"
 LICENSE="BSD-3-Clause GPL-2.0-or-later"
 
 if [[ ${PV} == 9999 ]]; then
-	SRC_URI="https://arcan.tase.lv/tarball/master/${PN}.tar.gz"
+	SRC_URI="https://arcan.tase.lv/tarball/master/${P}.tar.gz"
 else
-	SRC_URI="https://github.com/letoram/${PN}/archive/refs/tags/${PV}.tar.gz"
+	SRC_URI="https://arcan.tase.lv/tarball/${PV}/${P}.tar.gz"
 	KEYWORDS="~amd64"
 fi
-S="${WORKDIR}/${PN}"
 
 # Handle LWA openal acquisition
 SRC_URI+="
