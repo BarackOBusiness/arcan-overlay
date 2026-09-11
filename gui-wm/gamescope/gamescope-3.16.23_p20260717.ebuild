@@ -1,27 +1,26 @@
-# Copyright 1999-2025 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
 inherit fcaps meson
 
-MY_PV=$(ver_rs 3 -)
-MY_PV="${MY_PV//_/-}"
+SNAPSHOT="27615e49bc3604a7d6843cdba2327cc00af6ebb6"
 
 DESCRIPTION="Efficient micro-compositor for running games"
 HOMEPAGE="https://github.com/ValveSoftware/gamescope"
 EGIT_SUBMODULES=( src/reshade subprojects/{libliftoff,vkroots,wlroots} )
 
 if [[ ${PV} == "9999" ]]; then
-	EGIT_REPO_URI="https://codeberg.org/sashabjorkman/GameScope.git"
+	EGIT_REPO_URI="https://github.com/ValveSoftware/${PN}.git"
 	inherit git-r3
 else
 	RESHADE_COMMIT="696b14cd6006ae9ca174e6164450619ace043283"
 	LIBLIFTOFF_COMMIT="0.5.0" # Upstream points at this release.
 	VKROOTS_COMMIT="5106d8a0df95de66cc58dc1ea37e69c99afc9540"
-	WLROOTS_COMMIT="54e844748029d4874e14d0c086d50092c04c8899"
+	WLROOTS_COMMIT="88a869855742281c98c22cab9641b317b8d065ef"
 	SRC_URI="
-		https://github.com/ValveSoftware/${PN}/archive/refs/tags/${MY_PV}.tar.gz -> ${P}.tar.gz
+		https://codeberg.org/sashabjorkman/GameScope/archive/${SNAPSHOT}.tar.gz -> ${P}.tar.gz
 		https://gitlab.freedesktop.org/emersion/libliftoff/-/releases/v${LIBLIFTOFF_COMMIT}/downloads/libliftoff-${LIBLIFTOFF_COMMIT}.tar.gz
 		https://github.com/Joshua-Ashton/reshade/archive/${RESHADE_COMMIT}.tar.gz -> reshade-${RESHADE_COMMIT}.tar.gz
 		https://github.com/Joshua-Ashton/vkroots/archive/${VKROOTS_COMMIT}.tar.gz -> vkroots-${VKROOTS_COMMIT}.tar.gz
@@ -30,16 +29,14 @@ else
 	KEYWORDS="~amd64"
 fi
 
-S="${WORKDIR}/${PN}-${MY_PV}"
+S="${WORKDIR}/${PN}"
 LICENSE="BSD-2"
 SLOT="0"
-IUSE="avif libei pipewire +sdl systemd +wsi-layer"
-
-# systemd is automagic, but that's unlikely to be an issue in practise. It would
-# be rare for a user to switch from systemd to OpenRC.
+IUSE="avif libei pipewire +sdl +wsi-layer"
 
 RDEPEND="
-	arcan-base/arcan
+	>=arcan-base/arcan-0.7.1
+	dev-cpp/catch
 	dev-lang/luajit:2=
 	>=dev-libs/libinput-1.14.0:=
 	>=dev-libs/wayland-1.23.1
@@ -62,11 +59,12 @@ RDEPEND="
 	x11-libs/libXres
 	x11-libs/libXtst
 	x11-libs/libXxf86vm
+	>=x11-libs/pixman-0.43.0
+	virtual/libudev
 	avif? ( >=media-libs/libavif-1.0.0:= )
 	libei? ( dev-libs/libei )
 	pipewire? ( >=media-video/pipewire-0.3:= )
 	sdl? ( media-libs/libsdl2[video,vulkan] )
-	systemd? ( sys-apps/systemd:= )
 	wsi-layer? ( x11-libs/libxcb )
 "
 # For bundled wlroots.
@@ -74,10 +72,8 @@ RDEPEND+="
 	media-libs/libglvnd
 	>=media-libs/mesa-24.1.0_rc1[opengl]
 	sys-auth/seatd:=
-	virtual/libudev
 	x11-base/xwayland
 	x11-libs/libxcb:=
-	>=x11-libs/pixman-0.43.0
 	x11-libs/xcb-util-wm
 "
 DEPEND="
@@ -104,8 +100,6 @@ FILECAPS=(
 )
 
 src_prepare() {
-	default
-
 	# ReShade is bundled as a git submodule, but it references an unofficial
 	# fork, so we cannot unbundle it. Upstream have requested that we do not
 	# unbundle libliftoff, vkroots, or wlroots. Symlink to the extracted sources
@@ -116,7 +110,7 @@ src_prepare() {
 			rmdir "${dir}" || die
 			name=${dir##*/}
 			commit=${name^^}_COMMIT
-			ln -snfT "../../${name}-${!commit}" "${dir}" || die
+			mv "../${name}-${!commit}" "${dir}" || die
 		done
 	fi
 
@@ -125,6 +119,8 @@ src_prepare() {
 	# For 9999, this submodule is not included.
 	mkdir -p thirdparty/SPIRV-Headers/include || die
 	ln -snf "${ESYSROOT}"/usr/include/spirv thirdparty/SPIRV-Headers/include/ || die
+
+	default
 }
 
 src_configure() {
@@ -137,8 +133,8 @@ src_configure() {
 		$(meson_feature avif avif_screenshots)
 		$(meson_feature libei input_emulation)
 		$(meson_use wsi-layer enable_gamescope_wsi_layer)
-		-Dexternal_glm_stb=true
 		-Denable_openvr_support=false
+		-Dexternal_glm_stb=true
 		-Dbenchmark=disabled
 
 		-Dwlroots:xcb-errors=disabled

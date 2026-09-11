@@ -1,14 +1,17 @@
-# Copyright 1999-2025 Gentoo Authors
+# Copyright 1999-2026 Gentoo Authors
 # Distributed under the terms of the GNU General Public License v2
 
 EAPI=8
 
-inherit git-r3 cmake-multilib dot-a flag-o-matic
+inherit cmake-multilib dot-a flag-o-matic
+
+SNAPSHOT="2c12bbf1f580c7804e1a4794fb328a1ee0d923ec"
+MY_P="SDL2-${SNAPSHOT}"
 
 DESCRIPTION="Simple Direct Media Layer"
-HOMEPAGE="https://www.libsdl.org/"
-EGIT_REPO_URI="https://github.com/letoram/SDL2.git"
-EGIT_BRANCH="SDL2"
+HOMEPAGE=""
+SRC_URI="https://github.com/letoram/SDL2/archive/${SNAPSHOT}.tar.gz -> ${P}.tar.gz"
+S="${WORKDIR}/${MY_P}"
 
 LICENSE="ZLIB"
 SLOT="0"
@@ -39,6 +42,7 @@ REQUIRED_USE="
 COMMON_DEPEND="
 	virtual/libiconv[${MULTILIB_USEDEP}]
 	alsa? ( >=media-libs/alsa-lib-1.0.27.2[${MULTILIB_USEDEP}] )
+	arcan? ( >=arcan-base/arcan-0.7.1 )
 	dbus? ( >=sys-apps/dbus-1.6.18-r1[${MULTILIB_USEDEP}] )
 	ibus? ( app-i18n/ibus )
 	jack? ( virtual/jack[${MULTILIB_USEDEP}] )
@@ -147,8 +151,6 @@ src_configure() {
 		-DSDL_OSS=$(usex oss)
 		-DSDL_ALSA=$(usex alsa)
 		-DSDL_ALSA_SHARED=OFF
-		-DSDL_ARCAN=$(usex arcan)
-		-DSDL_ARCAN_SHARED=OFF
 		-DSDL_JACK=$(usex jack)
 		-DSDL_JACK_SHARED=OFF
 		-DSDL_ESD=OFF
