@@ -1,0 +1,15 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index c8e5e6aa..964533ed 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -178,7 +178,9 @@ if (GLFW_BUILD_WAYLAND)
+ endif()
+ 
+ if (GLFW_BUILD_ARCAN)
+-    target_include_directories(glfw PRIVATE "${ARCAN_SHMIF_INCLUDE_PATH}")
++    include(FindPkgConfig)
++    pkg_check_modules(ARCAN_SHMIF REQUIRED arcan-shmif)
++    target_include_directories(glfw PRIVATE "${ARCAN_SHMIF_INCLUDE_DIRS}")
+ 
+     target_link_libraries(glfw PRIVATE arcan_shmif)
+     target_link_libraries(glfw PRIVATE arcan_shmif_ext)
