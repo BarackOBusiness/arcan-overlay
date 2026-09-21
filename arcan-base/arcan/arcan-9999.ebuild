@@ -9,28 +9,26 @@ HOMEPAGE="https://arcan-fe.com/"
 LICENSE="BSD-3-Clause GPL-2.0-or-later"
 
 if [[ ${PV} == 9999 ]]; then
-	SRC_URI="https://arcan.tase.lv/tarball/master/${P}.tar.gz"
+	inherit fossil
+	EFOSSIL_REPO_URI="https://chiselapp.com/user/letoram/repository/arcan"
 else
-	SRC_URI="https://arcan.tase.lv/tarball/${PV}/${P}.tar.gz"
+	SRC_URI="https://chiselapp.com/user/letoram/repository/arcan/tarball/${PV}/${P}.tar.gz"
 	KEYWORDS="~amd64"
 fi
-
-# Handle LWA openal acquisition
-SRC_URI+="
-	nested? ( https://github.com/letoram/openal/archive/refs/heads/master.tar.gz )
-"
 
 SLOT="0"
 
 VIDEO_PLATFORMS="+dri gles +sdl"
-IUSE="${VIDEO_PLATFORMS}
-	+audio camera +decode +encode +nested wayland docs debug
+AUDIO_PLATFORMS="+openal miniaudio"
+IUSE="${VIDEO_PLATFORMS} ${AUDIO_PLATFORMS}
+	camera +decode +encode +nested wayland docs debug
 "
 # at least one video platform must be selected, egl-dri and egl-gles are mutually exclusive
 # egl-gles and sdl are also mutually exclusive whereas egl-dri supports hybrid-sdl
 REQUIRED_USE="
 	|| ( dri gles sdl )
 	gles? ( !dri !sdl )
+	?? ( openal miniaudio )
 	camera? ( decode )
 "
 
@@ -43,7 +41,7 @@ DEPEND="
 	x11-libs/libxkbcommon
 	dev-libs/libusb
 	virtual/opengl[X]
-	audio? ( media-libs/openal )
+	openal? ( media-libs/openal )
 	camera? ( media-libs/libuvc )
 	decode? (
 		<media-video/vlc-4.0
@@ -62,17 +60,12 @@ BDEPEND="
 	docs? ( dev-lang/ruby )
 "
 
-# For LWA we're going to need to conditionally add a download for openal
-# and unpack it into external during this phase
 src_prepare() {
 	cd "${S}"
 	if ( use docs ); then
 		cd "doc" && ruby docgen.rb mangen
 		cd "${S}"
 	fi
-	use nested && {
-		mv "${WORKDIR}/openal-master" "external/git/openal"
-	}
 	cd "${S}/src"
 	cmake_src_prepare
 }
@@ -82,21 +75,14 @@ src_configure() {
 		-DDISTR_TAG='Gentoo Linux'
 		-DCMAKE_BUILD_TYPE=$(usex debug "DebugTrace" "Release")
 		-DAGP_PLATFORM=gl21
-		-DAUDIO_PLATFORM=$(usex audio "openal" "stub")
+		-DVIDEO_PLATFORM=$(usex dri "egl-dri" $(usex gles "egl-gles" "sdl2"))
+		-DHYBRID_SDL=$(usex dri $(usex sdl "ON" "OFF") "OFF")
+		-DAUDIO_PLATFORM=$(usev openal || usev miniaudio || echo "stub")
 		-DDISABLE_FSRV_DECODE=$(usex decode OFF ON)
 		-DDISABLE_FSRV_ENCODE=$(usex encode OFF ON)
 		-DDISABLE_WAYLAND=$(usex wayland OFF ON)
 		-DENABLE_LWA=$(usex nested ON OFF)
 	)
-
-	if ( use dri ); then
-		mycmakeargs+=(-DVIDEO_PLATFORM=egl-dri)
-		use sdl && mycmakeargs+=(-DHYBRID_SDL=ON)
-	elif ( use gles ); then
-		mycmakeargs+=(-DVIDEO_PLATFORM=egl-gles)
-	else
-		mycmakeargs+=(-DVIDEO_PLATFORM=sdl2)
-	fi
 	cmake_src_configure
 }
 

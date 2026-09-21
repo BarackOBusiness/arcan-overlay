@@ -1,2 +1,3 @@
-# These two use flags are dummies right now
-=arcan-base/arcan-9999 camera
+# camera is a dummy
+# miniaudio doesn't build as of current fossil head
+=arcan-base/arcan-9999 camera miniaudio
