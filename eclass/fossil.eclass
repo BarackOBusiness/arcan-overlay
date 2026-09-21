@@ -118,7 +118,7 @@ fossil_fetch() {
     # Clone to a temporary file so an interrupted clone is never mistaken for
     # a usable repository on a subsequent run.
     rm -f "${store}.new" || die
-    fossil clone --once "${repo_uri}" "${store}" \
+    fossil clone --once "${repo_uri}" "${store}.new" \
       || die "${FUNCNAME}: clone of ${repo_uri} failed"
     mv "${store}.new" "${store}" || die
   fi
