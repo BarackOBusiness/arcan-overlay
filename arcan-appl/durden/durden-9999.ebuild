@@ -6,11 +6,11 @@ DESCRIPTION="A powerful and versatile multimedia development framework"
 HOMEPAGE="https://arcan-fe.com/"
 LICENSE="BSD-3-Clause GPL-2.0-or-later"
 
-# TODO: Make versioned
-SRC_URI="https://chiselapp.com/user/letoram/repository/durden/tarball/master/durden-9999.tar.gz"
+inherit fossil
+EFOSSIL_REPO_URI="https://chiselapp.com/user/letoram/repository/durden"
 SLOT="0"
 
-DEPEND=">=arcan-base/arcan-0.7.1"
+DEPEND="=arcan-base/arcan-9999"
 
 src_install() {
 	insinto /usr/share/arcan/appl
