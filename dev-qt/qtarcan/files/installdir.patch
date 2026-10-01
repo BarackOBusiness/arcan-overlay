@@ -7,7 +7,7 @@ index 32b991c..5c65421 100644
  
  set(TARGET_QT_VERSION "6" CACHE STRING "The major version of Qt to build against")
 -set(QT_PLUGIN_PREFIX "lib/qt/plugins/platforms" CACHE STRING "The install path for Qt plugins")
-+set(QT_PLUGIN_PREFIX "lib64/qt${TARGET_QT_VERSION}/plugins/platforms" CACHE STRING "The install path for Qt plugins")
++set(QT_PLUGIN_PREFIX "${CMAKE_INSTALL_LIBDIR}/qt${TARGET_QT_VERSION}/plugins/platforms" CACHE STRING "The install path for Qt plugins")
  option(SHMIF_FONTS "Enable experimental support for using shmif fonts")
  
  set(CMAKE_CXX_STANDARD 20)
