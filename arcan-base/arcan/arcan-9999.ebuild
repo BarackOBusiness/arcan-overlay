@@ -60,6 +60,10 @@ BDEPEND="
 	docs? ( dev-lang/ruby )
 "
 
+PATCHES=(
+	"${FILESDIR}/pkgconf.patch"
+)
+
 src_prepare() {
 	cd "${S}"
 	if ( use docs ); then

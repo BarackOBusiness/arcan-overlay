@@ -1,0 +1,75 @@
+Index: src/platform/cmake/a12.pc.in
+==================================================================
+--- src/platform/cmake/a12.pc.in
++++ src/platform/cmake/a12.pc.in
+@@ -1,8 +1,8 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+ exec_prefix=${prefix}
+-libdir=${prefix}/lib
++libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+ includedir=${prefix}/include/arcan
+ 
+ Name: arcan-a12
+ Description: Arcan-A12 protocol implementation
+ URL: https://arcan-fe.com
+
+Index: src/platform/cmake/shmif.pc.in
+==================================================================
+--- src/platform/cmake/shmif.pc.in
++++ src/platform/cmake/shmif.pc.in
+@@ -1,8 +1,8 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+ exec_prefix=${prefix}
+-libdir=${prefix}/lib
++libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+ includedir=${prefix}/include/arcan/shmif
+ 
+ Name: arcan-shmif
+ Description: Arcan Interface Library
+ URL: http://arcan-fe.com
+
+Index: src/platform/cmake/shmif_ext.pc.in
+==================================================================
+--- src/platform/cmake/shmif_ext.pc.in
++++ src/platform/cmake/shmif_ext.pc.in
+@@ -1,8 +1,8 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+ exec_prefix=${prefix}
+-libdir=${prefix}/lib
++libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+ includedir=${prefix}/include/arcan/shmif
+ 
+ Name: arcan-shmif-ext
+ Description: Arcan Extended Interface Library
+ URL: http://arcan-fe.com
+
+Index: src/platform/cmake/shmif_srv.pc.in
+==================================================================
+--- src/platform/cmake/shmif_srv.pc.in
++++ src/platform/cmake/shmif_srv.pc.in
+@@ -1,8 +1,8 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+ exec_prefix=${prefix}
+-libdir=${prefix}/lib
++libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+ includedir=${prefix}/include/arcan/shmif
+ 
+ Name: arcan-shmif-server
+ Description: Arcan Interface Library
+ URL: http://arcan-fe.com
+
+Index: src/platform/cmake/shmif_tui.pc.in
+==================================================================
+--- src/platform/cmake/shmif_tui.pc.in
++++ src/platform/cmake/shmif_tui.pc.in
+@@ -1,8 +1,8 @@
+ prefix=@CMAKE_INSTALL_PREFIX@
+ exec_prefix=${prefix}
+-libdir=${prefix}/lib
++libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+ includedir=${prefix}/include/arcan
+ 
+ Name: arcan-tui
+ Description: Arcan Text Interface Library
+ URL: http://arcan-fe.com
+

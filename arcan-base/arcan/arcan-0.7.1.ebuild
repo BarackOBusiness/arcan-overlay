@@ -8,12 +8,8 @@ DESCRIPTION="A powerful and versatile multimedia development framework"
 HOMEPAGE="https://arcan-fe.com/"
 LICENSE="BSD-3-Clause GPL-2.0-or-later"
 
-if [[ ${PV} == 9999 ]]; then
-	SRC_URI="https://arcan.tase.lv/tarball/master/${P}.tar.gz"
-else
-	SRC_URI="https://arcan.tase.lv/tarball/${PV}/${P}.tar.gz"
-	KEYWORDS="~amd64"
-fi
+SRC_URI="https://chiselapp.com/user/letoram/repository/arcan/tarball/${PV}/${P}.tar.gz"
+KEYWORDS="~amd64"
 
 # Handle LWA openal acquisition
 SRC_URI+="
@@ -61,6 +57,10 @@ BDEPEND="
 	dev-build/cmake
 	docs? ( dev-lang/ruby )
 "
+
+PATCHES=(
+	"${FILESDIR}/pkgconf.patch"
+)
 
 # For LWA we're going to need to conditionally add a download for openal
 # and unpack it into external during this phase
